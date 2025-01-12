@@ -1,0 +1,22 @@
+# config.yaml
+
+# Target directory for analysis
+target_dir: "/path/to/analyze"
+
+# Output file for the report
+output_file: "disk_usage_report.txt"
+
+# Optional: Specify a custom log file
+log_file: "disk_analysis.log"
+
+# Optional: Set a maximum depth for directory traversal
+max_depth: 5
+
+# Optional: Specify file extensions to exclude from analysis
+exclude_extensions:
+  - .tmp
+  - .log
+  - .temp
+
+# Optional: Set a minimum size threshold for files to be reported
+min_size_mb: 10
