@@ -28,7 +28,6 @@ Run Diskscape from the command line:
 diskscape --config=config.yaml
 ```
 
-
 ### GUI Mode
 
 Note: GUI support is currently in development.
@@ -46,9 +45,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [![Go Version](https://img.shields.io/github/go-mod/go-version/github.com/gbowne1/diskscape)](https://golang.org/doc/devel/release)
 [![GitHub Actions Status](https://github.com/gbowne1/diskscape/workflows/CI/badge.svg)](https://github.com/yourusername/diskscape/actions)
 
-
 Project Link: [https://github.com/gbowne1/diskscape](https://github.com/yourusername/diskscape)
 
 ## Acknowledgments
 
-Inspired by other fabulous FreeBSD and linux Go developers 
+Inspired by other fabulous FreeBSD and linux Go developers

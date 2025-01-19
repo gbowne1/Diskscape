@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/yourusername/diskusage-analyzer/config"
+	"github.com/gbowne1/Diskscape/config"
+    "github.com/gbowne1/Diskscape/diskstats"
+    "github.com/gbowne1/Diskscape/report"
+    "github.com/gbowne1/Diskscape/utils"
 )
 
 func main() {
