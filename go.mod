@@ -1,5 +1,5 @@
 module github.com/gbowne1/Diskscape
 
-go 1.23.5
+go 1.11.6
 
-require gopkg.in/yaml.v3 v3.0.1 // indirect
+require gopkg.in/yaml.v3 v3.0.1

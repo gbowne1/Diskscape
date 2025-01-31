@@ -2,8 +2,7 @@ package config
 
 import (
 	"fmt"
-	"os"
-
+	"io/ioutil" // Keep this import
 	"gopkg.in/yaml.v3"
 )
 
@@ -17,7 +16,8 @@ type Config struct {
 var globalConfig *Config
 
 func Load(path string) error {
-	data, err := os.ReadFile(path)
+	// Use ioutil.ReadFile here
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return fmt.Errorf("failed to read config file: %w", err)
 	}
