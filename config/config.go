@@ -1,14 +1,15 @@
 package config
 
 import (
-	"encoding/yaml"
+	"fmt"
 	"os"
-	"path/filepath"
+
+	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
 	TargetDir string `yaml:"target_dir"`
-	Output   struct {
+	Output    struct {
 		File string `yaml:"file"`
 	} `yaml:"output"`
 }

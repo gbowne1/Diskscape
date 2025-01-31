@@ -1,0 +1,293 @@
+From cd98b71d0dabf4af2d6d13a85b7333329b3302ec Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Borna=20=C5=A0o=C5=A1tari=C4=87?=
+ <sostaric.borna.dev@hotmail.com>
+Date: Thu, 30 Jan 2025 18:21:54 +0100
+Subject: [PATCH] patch
+
+---
+ config.yml                                | 22 -------
+ config.go => config/config.go             |  7 ++-
+ diskstats.go => diskstats/diskstats.go    |  0
+ filesystem.go => filesystem/filesystem.go |  1 +
+ go.mod                                    |  4 +-
+ go.sum                                    | 74 +----------------------
+ main.go                                   |  3 -
+ report.go => report/report.go             | 22 ++++---
+ root.go                                   |  0
+ root/root.go                              |  1 +
+ utils.go => utils/utils.go                |  0
+ 11 files changed, 24 insertions(+), 110 deletions(-)
+ delete mode 100644 config.yml
+ rename config.go => config/config.go (91%)
+ rename diskstats.go => diskstats/diskstats.go (100%)
+ rename filesystem.go => filesystem/filesystem.go (99%)
+ rename report.go => report/report.go (71%)
+ delete mode 100644 root.go
+ create mode 100644 root/root.go
+ rename utils.go => utils/utils.go (100%)
+
+diff --git a/config.yml b/config.yml
+deleted file mode 100644
+index 3dd82fc..0000000
+--- a/config.yml
++++ /dev/null
+@@ -1,22 +0,0 @@
+-# config.yaml
+-
+-# Target directory for analysis
+-target_dir: "/path/to/analyze"
+-
+-# Output file for the report
+-output_file: "disk_usage_report.txt"
+-
+-# Optional: Specify a custom log file
+-log_file: "disk_analysis.log"
+-
+-# Optional: Set a maximum depth for directory traversal
+-max_depth: 5
+-
+-# Optional: Specify file extensions to exclude from analysis
+-exclude_extensions:
+-  - .tmp
+-  - .log
+-  - .temp
+-
+-# Optional: Set a minimum size threshold for files to be reported
+-min_size_mb: 10
+diff --git a/config.go b/config/config.go
+similarity index 91%
+rename from config.go
+rename to config/config.go
+index 5ab7487..77d7b26 100644
+--- a/config.go
++++ b/config/config.go
+@@ -1,14 +1,15 @@
+ package config
+ 
+ import (
+-	"encoding/yaml"
++	"fmt"
+ 	"os"
+-	"path/filepath"
++
++	"gopkg.in/yaml.v3"
+ )
+ 
+ type Config struct {
+ 	TargetDir string `yaml:"target_dir"`
+-	Output   struct {
++	Output    struct {
+ 		File string `yaml:"file"`
+ 	} `yaml:"output"`
+ }
+diff --git a/diskstats.go b/diskstats/diskstats.go
+similarity index 100%
+rename from diskstats.go
+rename to diskstats/diskstats.go
+diff --git a/filesystem.go b/filesystem/filesystem.go
+similarity index 99%
+rename from filesystem.go
+rename to filesystem/filesystem.go
+index c07321c..e642618 100644
+--- a/filesystem.go
++++ b/filesystem/filesystem.go
+@@ -1,6 +1,7 @@
+ package filesystem
+ 
+ import (
++	"os"
+ 	"path/filepath"
+ 	"sort"
+ )
+diff --git a/go.mod b/go.mod
+index 62d7bb8..616c8ef 100644
+--- a/go.mod
++++ b/go.mod
+@@ -1,3 +1,5 @@
+ module github.com/gbowne1/Diskscape
+ 
+-require golang.org/x/tools v0.29.0 // indirect
++go 1.23.5
++
++require gopkg.in/yaml.v3 v3.0.1 // indirect
+diff --git a/go.sum b/go.sum
+index a043921..4bc0337 100644
+--- a/go.sum
++++ b/go.sum
+@@ -1,71 +1,3 @@
+-github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
+-github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
+-golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
+-golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
+-golang.org/x/crypto v0.13.0/go.mod h1:y6Z2r+Rw4iayiXXAIxJIDAJ1zMW4yaTpebo8fPOliYc=
+-golang.org/x/crypto v0.19.0/go.mod h1:Iy9bg/ha4yyC70EfRS8jz+B6ybOBKMaSxLj6P6oBDfU=
+-golang.org/x/crypto v0.23.0/go.mod h1:CKFgDieR+mRhux2Lsu27y0fO304Db0wZe70UKqHu0v8=
+-golang.org/x/crypto v0.32.0/go.mod h1:ZnnJkOaASj8g0AjIduWNlq2NRxL0PlBrbKVyZ6V/Ugc=
+-golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4/go.mod h1:jJ57K6gSWd91VN4djpZkiMVwK6gcyfeH4XE8wZrZaV4=
+-golang.org/x/mod v0.8.0/go.mod h1:iBbtSCu2XBx23ZKBPSOrRkjjQPZFPuis4dIYUhu/chs=
+-golang.org/x/mod v0.12.0/go.mod h1:iBbtSCu2XBx23ZKBPSOrRkjjQPZFPuis4dIYUhu/chs=
+-golang.org/x/mod v0.15.0/go.mod h1:hTbmBsO62+eylJbnUtE2MGJUyE7QWk4xUqPFrRgJ+7c=
+-golang.org/x/mod v0.17.0/go.mod h1:hTbmBsO62+eylJbnUtE2MGJUyE7QWk4xUqPFrRgJ+7c=
+-golang.org/x/mod v0.22.0 h1:D4nJWe9zXqHOmWqj4VMOJhvzj7bEZg4wEYa759z1pH4=
+-golang.org/x/mod v0.22.0/go.mod h1:6SkKJ3Xj0I0BrPOZoBy3bdMptDDU9oJrpohJ3eWZ1fY=
+-golang.org/x/net v0.0.0-20190620200207-3b0461eec859/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
+-golang.org/x/net v0.0.0-20210226172049-e18ecbb05110/go.mod h1:m0MpNAwzfU5UDzcl9v0D8zg8gWTRqZa9RBIspLL5mdg=
+-golang.org/x/net v0.0.0-20220722155237-a158d28d115b/go.mod h1:XRhObCWvk6IyKnWLug+ECip1KBveYUHfp+8e9klMJ9c=
+-golang.org/x/net v0.6.0/go.mod h1:2Tu9+aMcznHK/AK1HMvgo6xiTLG5rD5rZLDS+rp2Bjs=
+-golang.org/x/net v0.10.0/go.mod h1:0qNGK6F8kojg2nk9dLZ2mShWaEBan6FAoqfSigmmuDg=
+-golang.org/x/net v0.15.0/go.mod h1:idbUs1IY1+zTqbi8yxTbhexhEEk5ur9LInksu6HrEpk=
+-golang.org/x/net v0.21.0/go.mod h1:bIjVDfnllIU7BJ2DNgfnXvpSvtn8VRwhlsaeUTyUS44=
+-golang.org/x/net v0.25.0/go.mod h1:JkAGAh7GEvH74S6FOH42FLoXpXbE/aqXSrIQjXgsiwM=
+-golang.org/x/net v0.34.0/go.mod h1:di0qlW3YNM5oh6GqDGQr92MyTozJPmybPK4Ev/Gm31k=
+-golang.org/x/sync v0.0.0-20190423024810-112230192c58/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
+-golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
+-golang.org/x/sync v0.1.0/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
+-golang.org/x/sync v0.3.0/go.mod h1:FU7BRWz2tNW+3quACPkgCx/L+uEAv1htQ0V83Z9Rj+Y=
+-golang.org/x/sync v0.6.0/go.mod h1:Czt+wKu1gCyEFDUtn0jG5QVvpJ6rzVqr5aXyt9drQfk=
+-golang.org/x/sync v0.7.0/go.mod h1:Czt+wKu1gCyEFDUtn0jG5QVvpJ6rzVqr5aXyt9drQfk=
+-golang.org/x/sync v0.10.0 h1:3NQrjDixjgGwUOCaF8w2+VYHv0Ve/vGYSbdkTa98gmQ=
+-golang.org/x/sync v0.10.0/go.mod h1:Czt+wKu1gCyEFDUtn0jG5QVvpJ6rzVqr5aXyt9drQfk=
+-golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
+-golang.org/x/sys v0.0.0-20201119102817-f84b799fce68/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+-golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+-golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+-golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+-golang.org/x/sys v0.5.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+-golang.org/x/sys v0.8.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+-golang.org/x/sys v0.12.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+-golang.org/x/sys v0.17.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=
+-golang.org/x/sys v0.20.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=
+-golang.org/x/sys v0.29.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=
+-golang.org/x/telemetry v0.0.0-20240228155512-f48c80bd79b2/go.mod h1:TeRTkGYfJXctD9OcfyVLyj2J3IxLnKwHJR8f4D8a3YE=
+-golang.org/x/telemetry v0.0.0-20240521205824-bda55230c457/go.mod h1:pRgIJT+bRLFKnoM1ldnzKoxTIn14Yxz928LQRYYgIN0=
+-golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
+-golang.org/x/term v0.0.0-20210927222741-03fcf44c2211/go.mod h1:jbD1KX2456YbFQfuXm/mYQcufACuNUgVhRMnK/tPxf8=
+-golang.org/x/term v0.5.0/go.mod h1:jMB1sMXY+tzblOD4FWmEbocvup2/aLOaQEp7JmGp78k=
+-golang.org/x/term v0.8.0/go.mod h1:xPskH00ivmX89bAKVGSKKtLOWNx2+17Eiy94tnKShWo=
+-golang.org/x/term v0.12.0/go.mod h1:owVbMEjm3cBLCHdkQu9b1opXd4ETQWc3BhuQGKgXgvU=
+-golang.org/x/term v0.17.0/go.mod h1:lLRBjIVuehSbZlaOtGMbcMncT+aqLLLmKrsjNrUguwk=
+-golang.org/x/term v0.20.0/go.mod h1:8UkIAJTvZgivsXaD6/pH6U9ecQzZ45awqEOzuCvwpFY=
+-golang.org/x/term v0.28.0/go.mod h1:Sw/lC2IAUZ92udQNf3WodGtn4k/XoLyZoh8v/8uiwek=
+-golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
+-golang.org/x/text v0.3.3/go.mod h1:5Zoc/QRtKVWzQhOtBMvqHzDpF6irO9z98xDceosuGiQ=
+-golang.org/x/text v0.3.7/go.mod h1:u+2+/6zg+i71rQMx5EYifcz6MCKuco9NR6JIITiCfzQ=
+-golang.org/x/text v0.7.0/go.mod h1:mrYo+phRRbMaCq/xk9113O4dZlRixOauAjOtrjsXDZ8=
+-golang.org/x/text v0.9.0/go.mod h1:e1OnstbJyHTd6l/uOt8jFFHp6TRDWZR/bV3emEE/zU8=
+-golang.org/x/text v0.13.0/go.mod h1:TvPlkZtksWOMsz7fbANvkp4WM8x/WCo/om8BMLbz+aE=
+-golang.org/x/text v0.14.0/go.mod h1:18ZOQIKpY8NJVqYksKHtTdi31H5itFRjB5/qKTNYzSU=
+-golang.org/x/text v0.15.0/go.mod h1:18ZOQIKpY8NJVqYksKHtTdi31H5itFRjB5/qKTNYzSU=
+-golang.org/x/text v0.21.0/go.mod h1:4IBbMaMmOPCJ8SecivzSH54+73PCFmPWxNTLm+vZkEQ=
+-golang.org/x/tools v0.0.0-20180917221912-90fa682c2a6e/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=
+-golang.org/x/tools v0.0.0-20191119224855-298f0cb1881e/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
+-golang.org/x/tools v0.1.12/go.mod h1:hNGJHUnrk76NpqgfD5Aqm5Crs+Hm0VOH/i9J2+nxYbc=
+-golang.org/x/tools v0.6.0/go.mod h1:Xwgl3UAJ/d3gWutnCtw505GrjyAbvKui8lOU390QaIU=
+-golang.org/x/tools v0.13.0/go.mod h1:HvlwmtVNQAhOuCjW7xxvovg8wbNq7LwfXh/k7wXUl58=
+-golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d/go.mod h1:aiJjzUbINMkxbQROHiO6hDPo2LHcIPhhQsa9DLh0yGk=
+-golang.org/x/tools v0.29.0 h1:Xx0h3TtM9rzQpQuR4dKLrdglAmCEN5Oi+P74JdhdzXE=
+-golang.org/x/tools v0.29.0/go.mod h1:KMQVMRsVxU6nHCFXrBPhDB8XncLNLM0lIy/F14RP588=
+-golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
++gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
++gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
++gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
+diff --git a/main.go b/main.go
+index 5bfcaa5..8a13813 100644
+--- a/main.go
++++ b/main.go
+@@ -6,9 +6,6 @@ import (
+ 	"log"
+ 
+ 	"github.com/gbowne1/Diskscape/config"
+-    "github.com/gbowne1/Diskscape/diskstats"
+-    "github.com/gbowne1/Diskscape/report"
+-    "github.com/gbowne1/Diskscape/utils"
+ )
+ 
+ func main() {
+diff --git a/report.go b/report/report.go
+similarity index 71%
+rename from report.go
+rename to report/report.go
+index 5febbf2..2b4ba38 100644
+--- a/report.go
++++ b/report/report.go
+@@ -1,9 +1,11 @@
+ package report
+ 
+ import (
+-	"fmt"
+ 	"os"
+ 	"text/template"
++
++	"github.com/gbowne1/Diskscape/diskstats"
++	"github.com/gbowne1/Diskscape/filesystem"
+ )
+ 
+ const reportTemplate = `
+@@ -30,24 +32,24 @@ type Report struct {
+ 	UsedSpace      int64
+ 	FreeSpace      int64
+ 	UsedPercentage float64
+-	TopEntries     []FilesystemEntry
++	TopEntries     []filesystem.FilesystemEntry
+ 	Breakdown      map[string]struct {
+ 		Size       int64
+ 		Percentage float64
+ 	}
+ }
+ 
+-func GenerateReport(stats DiskStats, entries []FilesystemEntry, breakdown map[string]struct {
++func GenerateReport(stats diskstats.DiskStats, entries []filesystem.FilesystemEntry, breakdown map[string]struct {
+ 	Size       int64
+ 	Percentage float64
+ }) *Report {
+ 	return &Report{
+-		TotalSpace:     stats.TotalSpace,
+-		UsedSpace:      stats.TotalSpace - stats.FreeSpace,
+-		FreeSpace:      stats.FreeSpace,
++		TotalSpace:     int64(stats.TotalSpace),
++		UsedSpace:      int64(stats.TotalSpace - stats.FreeSpace),
++		FreeSpace:      int64(stats.FreeSpace),
+ 		UsedPercentage: stats.UsedPercentage,
+ 		TopEntries:     entries[:10],
+-		Breakdown:       breakdown,
++		Breakdown:      breakdown,
+ 	}
+ }
+ 
+@@ -62,8 +64,8 @@ func PrintReport(report *Report) {
+ 		UsedSpace      int64
+ 		FreeSpace      int64
+ 		UsedPercentage float64
+-		TopEntries     []FilesystemEntry
+-		Breakdown       map[string]struct {
++		TopEntries     []filesystem.FilesystemEntry
++		Breakdown      map[string]struct {
+ 			Size       int64
+ 			Percentage float64
+ 		}
+@@ -73,7 +75,7 @@ func PrintReport(report *Report) {
+ 		FreeSpace:      report.FreeSpace,
+ 		UsedPercentage: report.UsedPercentage,
+ 		TopEntries:     report.TopEntries,
+-		Breakdown:       report.Breakdown,
++		Breakdown:      report.Breakdown,
+ 	}
+ 
+ 	err = tmpl.Execute(os.Stdout, data)
+diff --git a/root.go b/root.go
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/root/root.go b/root/root.go
+new file mode 100644
+index 0000000..c804031
+--- /dev/null
++++ b/root/root.go
+@@ -0,0 +1 @@
++package root
+diff --git a/utils.go b/utils/utils.go
+similarity index 100%
+rename from utils.go
+rename to utils/utils.go
+-- 
+2.48.1
+

@@ -1,3 +1,5 @@
 module github.com/gbowne1/Diskscape
 
-require golang.org/x/tools v0.29.0 // indirect
+go 1.23.5
+
+require gopkg.in/yaml.v3 v3.0.1 // indirect

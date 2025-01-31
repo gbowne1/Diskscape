@@ -1,9 +1,11 @@
 package report
 
 import (
-	"fmt"
 	"os"
 	"text/template"
+
+	"github.com/gbowne1/Diskscape/diskstats"
+	"github.com/gbowne1/Diskscape/filesystem"
 )
 
 const reportTemplate = `
@@ -30,24 +32,24 @@ type Report struct {
 	UsedSpace      int64
 	FreeSpace      int64
 	UsedPercentage float64
-	TopEntries     []FilesystemEntry
+	TopEntries     []filesystem.FilesystemEntry
 	Breakdown      map[string]struct {
 		Size       int64
 		Percentage float64
 	}
 }
 
-func GenerateReport(stats DiskStats, entries []FilesystemEntry, breakdown map[string]struct {
+func GenerateReport(stats diskstats.DiskStats, entries []filesystem.FilesystemEntry, breakdown map[string]struct {
 	Size       int64
 	Percentage float64
 }) *Report {
 	return &Report{
-		TotalSpace:     stats.TotalSpace,
-		UsedSpace:      stats.TotalSpace - stats.FreeSpace,
-		FreeSpace:      stats.FreeSpace,
+		TotalSpace:     int64(stats.TotalSpace),
+		UsedSpace:      int64(stats.TotalSpace - stats.FreeSpace),
+		FreeSpace:      int64(stats.FreeSpace),
 		UsedPercentage: stats.UsedPercentage,
 		TopEntries:     entries[:10],
-		Breakdown:       breakdown,
+		Breakdown:      breakdown,
 	}
 }
 
@@ -62,8 +64,8 @@ func PrintReport(report *Report) {
 		UsedSpace      int64
 		FreeSpace      int64
 		UsedPercentage float64
-		TopEntries     []FilesystemEntry
-		Breakdown       map[string]struct {
+		TopEntries     []filesystem.FilesystemEntry
+		Breakdown      map[string]struct {
 			Size       int64
 			Percentage float64
 		}
@@ -73,7 +75,7 @@ func PrintReport(report *Report) {
 		FreeSpace:      report.FreeSpace,
 		UsedPercentage: report.UsedPercentage,
 		TopEntries:     report.TopEntries,
-		Breakdown:       report.Breakdown,
+		Breakdown:      report.Breakdown,
 	}
 
 	err = tmpl.Execute(os.Stdout, data)
