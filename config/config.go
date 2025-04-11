@@ -2,7 +2,8 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil" // Keep this import
+	"io/ioutil"
+	// Keep this import
 	"gopkg.in/yaml.v3"
 )
 

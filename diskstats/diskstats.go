@@ -1,11 +1,9 @@
 package diskstats
 
 import (
-	"bufio"
 	"fmt"
-	"os/exec"
-	"strconv"
-	"strings"
+
+	"golang.org/x/sys/unix"
 )
 
 type DiskStats struct {
@@ -24,8 +22,9 @@ func GetDiskStats(targetDir string) (*DiskStats, error) {
 		return nil, fmt.Errorf("failed to retrieve disk stats: %w", err)
 	}
 
-	lines := strings.Split(string(output), "\n")
-	for _, line := range lines {
+	total := stat.Blocks * uint64(stat.Bsize)
+	free := stat.Bfree * uint64(stat.Bsize)
+	used := total - free
 	usedPercentage := (float64(used) / float64(total)) * 100
 
 	return &DiskStats{
@@ -33,5 +32,4 @@ func GetDiskStats(targetDir string) (*DiskStats, error) {
 		FreeSpace:      free,
 		UsedPercentage: usedPercentage,
 	}, nil
-	return nil, fmt.Errorf("disk stats not found for directory: %s", targetDir)
-	return nil, fmt.Errorf("disk stats not found for directory: %s. Ensure the directory exists and you have sufficient permissions to access it", targetDir)
+}
