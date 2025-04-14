@@ -3,7 +3,7 @@ package tui
 import (
 	"fmt"
 
-	"github.com/gbowne1/Diskscape/diskstats"
+	"github.com/gbowne1/Diskscape/core/diskstats"
 	"github.com/rivo/tview"
 )
 

@@ -3,21 +3,35 @@ package config
 import (
 	"fmt"
 	"io/ioutil"
-	// Keep this import
+	"log"
+
 	"gopkg.in/yaml.v3"
 )
 
+// Config represents the structure of the YAML configuration file
 type Config struct {
 	TargetDir string `yaml:"target_dir"`
 	Output    struct {
 		File string `yaml:"file"`
 	} `yaml:"output"`
+	Report struct {
+		MaxEntries int `yaml:"max_entries"`
+	} `yaml:"report"`
+	Thresholds struct {
+		WarningPercentage  int `yaml:"warning_percentage"`
+		CriticalPercentage int `yaml:"critical_percentage"`
+	} `yaml:"thresholds"`
+	Logging struct {
+		Level string `yaml:"level"`
+		File  string `yaml:"file"`
+	} `yaml:"logging"`
 }
 
-var globalConfig *Config
+// GlobalConfig holds the parsed configuration values
+var GlobalConfig *Config
 
+// Load reads and parses the YAML configuration file
 func Load(path string) error {
-	// Use ioutil.ReadFile here
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return fmt.Errorf("failed to read config file: %w", err)
@@ -28,13 +42,15 @@ func Load(path string) error {
 		return fmt.Errorf("failed to parse YAML: %w", err)
 	}
 
-	globalConfig = &cfg
+	GlobalConfig = &cfg
+	log.Printf("Configuration loaded successfully from %s\n", path)
 	return nil
 }
 
+// Get returns the loaded configuration
 func Get() *Config {
-	if globalConfig == nil {
+	if GlobalConfig == nil {
 		panic("Configuration not loaded")
 	}
-	return globalConfig
+	return GlobalConfig
 }

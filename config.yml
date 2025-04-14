@@ -1,0 +1,20 @@
+# Directory to analyze disk usage
+target_dir: "/"
+
+# Output settings
+output:
+  file: "disk_report.txt"
+
+# Limit the number of entries to display in the report
+report:
+  max_entries: 10
+
+# Thresholds for disk usage warnings
+thresholds:
+  warning_percentage: 75
+  critical_percentage: 90
+
+# Logging settings
+logging:
+  level: "info" # Options: debug, info, warn, error
+  file: "diskscape.log"

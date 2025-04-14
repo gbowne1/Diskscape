@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/gbowne1/Diskscape/config"
+	"github.com/gbowne1/Diskscape/core/config"
 	"github.com/gbowne1/Diskscape/tui"
 )
 

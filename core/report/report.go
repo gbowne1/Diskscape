@@ -4,8 +4,8 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/gbowne1/Diskscape/diskstats"
-	"github.com/gbowne1/Diskscape/filesystem"
+	"github.com/gbowne1/Diskscape/core/diskstats"
+	"github.com/gbowne1/Diskscape/core/filesystem"
 )
 
 const reportTemplate = `
