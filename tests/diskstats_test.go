@@ -13,3 +13,17 @@ func TestGetDiskStats(t *testing.T) {
 		t.Errorf("Expected non-zero TotalSpace, got %d", stats.TotalSpace)
 	}
 }
+
+func GetDiskStats(s string) (any, any) {
+	panic("unimplemented")
+}
+
+func TotalSpace() int {
+	return 0
+}
+func FreeSpace() int {
+	return 0
+}
+func UsedPercentage() int {
+	return 0
+}

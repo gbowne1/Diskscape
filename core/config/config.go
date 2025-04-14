@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 
 	"gopkg.in/yaml.v3"
 )
@@ -32,7 +32,8 @@ var GlobalConfig *Config
 
 // Load reads and parses the YAML configuration file
 func Load(path string) error {
-	data, err := ioutil.ReadFile(path)
+	// Use os.ReadFile instead of ioutil.ReadFile
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return fmt.Errorf("failed to read config file: %w", err)
 	}
